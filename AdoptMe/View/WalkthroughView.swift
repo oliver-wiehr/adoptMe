@@ -58,6 +58,12 @@ struct WalkthroughView: View {
                         Text("")
                     }
                 }
+                .disabled({
+                    if page == 1 {
+                        return !ZipCodes.validate(location)
+                    }
+                    return false
+                }())
                 .padding()
             }
         }.frame(height: 450)
