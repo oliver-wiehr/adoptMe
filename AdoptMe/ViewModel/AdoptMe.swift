@@ -73,6 +73,7 @@ class AdoptMe: ObservableObject {
             }
         }
     }
+    
     @Published var location: String? {
         didSet {
             if let location = location {
@@ -83,6 +84,7 @@ class AdoptMe: ObservableObject {
             }
         }
     }
+    
     @Published var animalTypes: [AnimalType]? {
         didSet {
             if let search = search {
@@ -98,6 +100,18 @@ class AdoptMe: ObservableObject {
             }
         }
     }
+    
+    @Published var recentSearches = [Search]() {
+        didSet {
+            if recentSearches.count > 5 {
+                self.recentSearches.remove(at: 4)
+            }
+            if recentSearches.count > 0 {
+                Persistence.addRecentSearch(recentSearches[0])
+            }
+        }
+    }
+    
 	var organizations = [Organization]()
 	var images = [String: Image]()
 	var breeds: [Breed]?
@@ -111,6 +125,7 @@ class AdoptMe: ObservableObject {
             self.location = location
             self.search = search
         }
+        self.recentSearches = Persistence.getRecentSearches()
 	}
 	
 	func loadOrganizations(_ completion: @escaping () -> Void) {
@@ -199,7 +214,7 @@ class AdoptMe: ObservableObject {
 			self.loadAnimals()
 		}
 	}
-	
+    
 	func loadAnimals() {
 		guard let search = search, let location = location else {
 			return

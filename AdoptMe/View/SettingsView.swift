@@ -70,6 +70,9 @@ struct AnimalTypeView: View {
 			Text(animalType ?? "Other")
 		}.onTapGesture {
 			if let animalType = animalType {
+                if let previousSearch = adoptMe.search {
+                    adoptMe.recentSearches.insert(previousSearch, at: 0)
+                }
                 adoptMe.search = Search(animalType: animalType, filters: [:])
 				withAnimation {
 					showSettingsView = false
@@ -81,6 +84,9 @@ struct AnimalTypeView: View {
             FilterView(filter: Filter(id: "animalTypes", title: "Animal Types", options: adoptMe.animalTypes?.map {
                 FilterOption(id: $0.name, title: $0.name)
             } ?? []), selectionAction: { filterOptionId in
+                if let previousSearch = adoptMe.search {
+                    adoptMe.recentSearches.insert(previousSearch, at: 0)
+                }
                 adoptMe.search = Search(animalType: filterOptionId, filters: [:])
                 withAnimation {
                     showSheet = false
@@ -93,14 +99,16 @@ struct AnimalTypeView: View {
 }
 
 struct RecentSearchView: View {
+    var search: Search
+    
 	var body: some View {
 		ZStack {
 			RoundedRectangle(cornerRadius: 5)
 				.foregroundColor(.gray)
 			HStack(alignment: .top) {
 				VStack(alignment: .leading) {
-					Text("Dog").font(.headline)
-					Text("5 filters")
+                    Text(search.animalType.capitalized).font(.headline)
+                    Text("\(search.filters.count) filters")
 				}
 				Spacer()
 				RoundedRectangle(cornerRadius: 5)
@@ -108,16 +116,20 @@ struct RecentSearchView: View {
 					.foregroundColor(.black)
 			}.padding()
 		}
+        .frame(height: 134)
 	}
 }
 
 struct RecentSearchesView: View {
+    @EnvironmentObject var adoptMe: AdoptMe
+    
 	var body: some View {
 		VStack {
 			Text("Recent Searches")
 				.font(.title3)
-			RecentSearchView()
-				.frame(height: 134)
+            ForEach($adoptMe.recentSearches.indices, id: \.self) { index in
+                RecentSearchView(search: adoptMe.recentSearches[index])
+            }
 		}
 	}
 }
