@@ -16,7 +16,7 @@ struct SettingsView: View {
 			ScrollView {
 				VStack() {
 					NewSearchView(showSettingsView: $show).padding()
-					RecentSearchesView().padding()
+                    RecentSearchesView(showSettingsView: $show).padding()
                     ChangeLocationView(location: $adoptMe.location).padding()
 					CopyRightView().padding()
 				}
@@ -122,6 +122,7 @@ struct RecentSearchView: View {
 
 struct RecentSearchesView: View {
     @EnvironmentObject var adoptMe: AdoptMe
+    @Binding var showSettingsView: Bool
     
 	var body: some View {
 		VStack {
@@ -129,6 +130,12 @@ struct RecentSearchesView: View {
 				.font(.title3)
             ForEach($adoptMe.recentSearches.indices, id: \.self) { index in
                 RecentSearchView(search: adoptMe.recentSearches[index])
+                    .onTapGesture {
+                        adoptMe.search = adoptMe.recentSearches[index]
+                        withAnimation {
+                            showSettingsView = false
+                        }
+                    }
             }
 		}
 	}
