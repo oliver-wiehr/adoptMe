@@ -8,8 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct SearchResult: Identifiable {
-	var id: Int
+struct SearchResult: Codable {
 	var animal: Animal
 	var organization: Organization
 }
@@ -17,7 +16,12 @@ struct SearchResult: Identifiable {
 class AdoptMe: ObservableObject {
 	
 	@Published var searchResults = [SearchResult]()
-	@Published var favorites = [SearchResult]()
+    
+    @Published var favorites = [SearchResult]() {
+        didSet {
+            Persistence.setFavorites(favorites)
+        }
+    }
 	
 	@Published var filters = [
 		Filter(id: "sortBy", title: "Sort By", options: [
@@ -107,6 +111,7 @@ class AdoptMe: ObservableObject {
 	var page = 1
 	
     init(search: Search?, location: String?) {
+        self.favorites = Persistence.getFavorites()
         loadAnimalTypes() {
             self.location = location
             self.search = search
@@ -218,7 +223,7 @@ class AdoptMe: ObservableObject {
 						if let organization = self.organizations.first(where: { organization in
 							organization.id == animal.organizationId
 						}) {
-							searchResults.append(SearchResult(id: id, animal: animal, organization: organization))
+							searchResults.append(SearchResult(animal: animal, organization: organization))
 							id += 1
                         }
 					}

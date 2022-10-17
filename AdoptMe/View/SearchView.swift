@@ -51,6 +51,8 @@ struct SearchView: View {
    }
 
 struct SearchResultView: View {
+    @EnvironmentObject var adoptMe: AdoptMe
+    
 	var searchResult: SearchResult
 	
 	var body: some View {
@@ -75,9 +77,13 @@ struct SearchResultView: View {
 					Text(searchResult.animal.name).font(.headline)
 					Spacer()
 					Button {
-						
+                        if adoptMe.favorites.contains(where: { $0.animal.id == searchResult.animal.id }) {
+                            adoptMe.favorites.removeAll(where: { $0.animal.id == searchResult.animal.id })
+                        } else {
+                            adoptMe.favorites.insert(searchResult, at: 0)
+                        }
 					} label: {
-						Image(systemName: "heart")
+                        Image(systemName: adoptMe.favorites.contains(where: { $0.animal.id == searchResult.animal.id }) ? "heart.fill" : "heart")
 					}
 					.frame(width: 18.0, height: 18.0)
 				}
@@ -105,7 +111,8 @@ struct SearchResultsView: View {
         } else {
             ScrollView {
                 LazyVStack {
-                    ForEach(adoptMe.searchResults) { searchResult in
+                    ForEach(adoptMe.searchResults.indices, id: \.self) { index in
+                        let searchResult = adoptMe.searchResults[index]
                         NavigationLink {
                             AnimalView(
                                 animal: searchResult.animal,

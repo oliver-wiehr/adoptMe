@@ -70,15 +70,15 @@ class SampleData {
 	static let filter = Filter(id: "age", title: "Age", options: SampleData.filterOptions)
 	
 	static let searchResults = [
-		SearchResult(id: 0, animal: SampleData.animals[0], organization: SampleData.organizations[0]),
-		SearchResult(id: 1, animal: SampleData.animals[0], organization: SampleData.organizations[0]),
-		SearchResult(id: 2, animal: SampleData.animals[0], organization: SampleData.organizations[0]),
-		SearchResult(id: 3, animal: SampleData.animals[0], organization: SampleData.organizations[0])
+		SearchResult(animal: SampleData.animals[0], organization: SampleData.organizations[0]),
+		SearchResult(animal: SampleData.animals[0], organization: SampleData.organizations[0]),
+		SearchResult(animal: SampleData.animals[0], organization: SampleData.organizations[0]),
+		SearchResult(animal: SampleData.animals[0], organization: SampleData.organizations[0])
 	]
 	
 	static let favorites = [
-		SearchResult(id: 0, animal: SampleData.animals[0], organization: SampleData.organizations[0]),
-		SearchResult(id: 1, animal: SampleData.animals[0], organization: SampleData.organizations[0])
+		SearchResult(animal: SampleData.animals[0], organization: SampleData.organizations[0]),
+		SearchResult(animal: SampleData.animals[0], organization: SampleData.organizations[0])
 	]
 	
 	static let adoptMe: AdoptMe = {
