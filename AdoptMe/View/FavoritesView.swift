@@ -37,7 +37,8 @@ struct SavedFavoritesView: View {
 	var body: some View {
 		ScrollView {
 			LazyVStack {
-				ForEach(adoptMe.favorites) { searchResult in
+                ForEach(adoptMe.favorites.indices, id: \.self) { index in
+                    let searchResult = adoptMe.favorites[index]
 					NavigationLink {
 						AnimalView(
 							animal: searchResult.animal,

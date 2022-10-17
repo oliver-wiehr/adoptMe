@@ -24,60 +24,48 @@ class Persistence {
 			UserDefaults.standard.set(encoded, forKey: "currentSearch")
 		}
 	}
-	
-	static func getRecentSearches() -> [Search] {
-		if let data = UserDefaults.standard.object(forKey: "recentSearches") as? Data {
-			if let recentSearches = try? JSONDecoder().decode([Search].self, from: data) {
-				return recentSearches
-			}
-		}
-		
-		return []
-	}
-	
-	static func addRecentSearch(_ search: Search) {
-		var recentSearches = getRecentSearches()
-		recentSearches.insert(search, at: 0)
-		if recentSearches.count > 5 {
-			recentSearches = Array(recentSearches[0..<5])
-		}
-		
-		if let encoded = try? JSONEncoder().encode(recentSearches) {
-			UserDefaults.standard.set(encoded, forKey: "recentSearches")
-		}
-	}
-	
-	static func setLocation(_ location: String) {
-		UserDefaults.standard.set(location, forKey: "location")
-	}
-	
-	static func getLocation() -> String? {
-		return UserDefaults.standard.object(forKey: "location") as? String
-	}
-	
-	static func addFavorite(_ id: Int) {
-		if var favorites = UserDefaults.standard.object(forKey: "favorites") as? [Int] {
-			favorites.append(id)
-			UserDefaults.standard.set(favorites, forKey: "favorites")
-		} else {
-			UserDefaults.standard.set([id], forKey: "favorites")
-		}
-	}
-	
-	static func removeFavorite(_ id: Int) {
-		if var favorites = UserDefaults.standard.object(forKey: "favorites") as? [Int] {
-			favorites.removeAll { favorite in
-				id == favorite
-			}
-			UserDefaults.standard.set(favorites, forKey: "favorites")
-		}
-	}
-	
-	static func isFavorite(_ id: Int) -> Bool {
-		return getFavorites().contains(id)
-	}
-	
-	static func getFavorites() -> [Int] {
-		return UserDefaults.standard.object(forKey: "favorites") as? [Int] ?? []
-	}
+    
+    static func getRecentSearches() -> [Search] {
+        if let data = UserDefaults.standard.object(forKey: "recentSearches") as? Data,
+           let recentSearches = try? JSONDecoder().decode([Search].self, from: data) {
+            return recentSearches
+        }
+        
+        return []
+    }
+    
+    static func addRecentSearch(_ search: Search) {
+        var recentSearches = getRecentSearches()
+        recentSearches.insert(search, at: 0)
+        if recentSearches.count > 5 {
+            recentSearches = Array(recentSearches[0..<5])
+        }
+        
+        if let encoded = try? JSONEncoder().encode(recentSearches) {
+            UserDefaults.standard.set(encoded, forKey: "recentSearches")
+        }
+    }
+    
+    static func setLocation(_ location: String) {
+        UserDefaults.standard.set(location, forKey: "location")
+    }
+    
+    static func getLocation() -> String? {
+        return UserDefaults.standard.object(forKey: "location") as? String
+    }
+    
+    static func setFavorites(_ favorites: [SearchResult]) {
+        if let encoded = try? JSONEncoder().encode(favorites) {
+            UserDefaults.standard.set(encoded, forKey: "favorites")
+        }
+    }
+    
+    static func getFavorites() -> [SearchResult] {
+        if let data = UserDefaults.standard.object(forKey: "favorites") as? Data,
+           let favorites = try? JSONDecoder().decode([SearchResult].self, from: data) {
+            return favorites
+        }
+        
+        return []
+    }
 }
