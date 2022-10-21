@@ -139,19 +139,22 @@ struct AnimalOrganizationView: View {
                 }
             }
             HStack {
-                Button {
-                    adoptMe.callPhone(organization.phone!)
-                } label: {
-                    Image(systemName: "phone.fill")
+                if let phone = organization.phone {
+                    Button {
+                        adoptMe.callPhone(phone)
+                    } label: {
+                        Image(systemName: "phone.fill")
+                    }
+                    .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
                 }
-                .disabled(organization.phone == nil)
-                Spacer()
-                Button {
-                    adoptMe.writeEmail(organization.email!)
-                } label: {
-                    Image(systemName: "envelope.fill")
+                if let email = organization.email {
+                    Button {
+                        adoptMe.writeEmail(email)
+                    } label: {
+                        Image(systemName: "envelope.fill")
+                    }
+                    .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
                 }
-                .disabled(organization.email == nil)
             }
             .frame(maxWidth: 100)
             .padding()
@@ -159,6 +162,7 @@ struct AnimalOrganizationView: View {
             if let location = organization.address?.coordinate {
                 OrganizationMap(
                     organization: organization,
+                    location: location,
                     region: MKCoordinateRegion(center: location, latitudinalMeters: 7500, longitudinalMeters: 7500)
                 )
             }
@@ -168,15 +172,22 @@ struct AnimalOrganizationView: View {
 
 struct OrganizationMap : View {
     var organization: Organization
+    var location: CLLocationCoordinate2D
     @State var region: MKCoordinateRegion
     
     var body: some View {
         Map(coordinateRegion: $region, annotationItems: [organization]) { place in
-            MapMarker(coordinate: organization.address!.coordinate!, tint: .accentColor)
+            MapMarker(coordinate: location, tint: .accentColor)
         }
         .cornerRadius(5.0)
         .aspectRatio(1.0, contentMode: .fit)
         .padding()
+        .onTapGesture {
+            let path = "http://maps.apple.com/?daddr=\(location.latitude),\(location.longitude)"
+            if let url = URL(string: path) {
+                UIApplication.shared.open(url)
+            }
+        }
     }
 }
 
