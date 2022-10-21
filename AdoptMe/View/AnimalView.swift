@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct AnimalView: View {
 	@EnvironmentObject var adoptMe: AdoptMe
@@ -115,39 +116,59 @@ struct AnimalHealthView: View {
 }
 
 struct AnimalOrganizationView: View {
+    @EnvironmentObject var adoptMe: AdoptMe
 	var organization: Organization
 	
 	var body: some View {
 		VStack {
 			HStack {
 				Rectangle()
-					.frame(width: 50.0, height: 50.0)
-					.aspectRatio(1.0, contentMode: .fit)
-					.foregroundColor(.gray)
-					.cornerRadius(/*@START_MENU_TOKEN@*/5.0/*@END_MENU_TOKEN@*/)
-				VStack {
-					Text(organization.name)
-					Text(organization.address?.city ?? "")
-				}
-			}
-			HStack {
-				Image(systemName: "phone.fill")
-				Image(systemName: "envelope.fill")
-			}.padding()
-			Rectangle()
-			 .aspectRatio(1.0, contentMode: .fit)
-			 .foregroundColor(.gray)
-			 .padding()
-			 .cornerRadius(5.0)
-		}
-	}
+                    .frame(width: 50.0, height: 50.0)
+                    .aspectRatio(1.0, contentMode: .fit)
+                    .foregroundColor(.gray)
+                    .cornerRadius(/*@START_MENU_TOKEN@*/5.0/*@END_MENU_TOKEN@*/)
+                VStack {
+                    Text(organization.name)
+                    Text(organization.address?.city ?? "")
+                }
+            }
+            HStack {
+                Image(systemName: "phone.fill")
+                Image(systemName: "envelope.fill")
+            }.padding()
+            
+            
+            OrganizationMap(
+                organization: organization,
+                region: MKCoordinateRegion(center: organization.address?.coordinate ??
+                                           CLLocationCoordinate2D(latitude: 0, longitude: 0)
+                                           , latitudinalMeters: 7500, longitudinalMeters: 7500)
+            )
+        }
+    }
+}
+
+struct OrganizationMap : View {
+    var organization: Organization
+    @State var region: MKCoordinateRegion
+    
+    var body: some View {
+        Map(coordinateRegion: $region, annotationItems: [organization]) { place in
+            MapMarker(coordinate: organization.address?.coordinate ??
+                      CLLocationCoordinate2D(latitude: 0, longitude: 0),
+                      tint: Color.purple)
+        }
+        .cornerRadius(5.0)
+        .aspectRatio(1.0, contentMode: .fit)
+        .padding()
+    }
 }
 
 struct AnimalView_Previews: PreviewProvider {
-	static var previews: some View {
-		AnimalView(animal: SampleData.animals[0], organization: SampleData.organizations[0]).preferredColorScheme(.dark)
+    static var previews: some View {
+        AnimalView(animal: SampleData.animals[0], organization: SampleData.organizations[0]).preferredColorScheme(.dark)
             .environmentObject(SampleData.adoptMe)
-		AnimalView(animal: SampleData.animals[0], organization: SampleData.organizations[0]).previewDevice("iPhone SE (2nd generation)")
+        AnimalView(animal: SampleData.animals[0], organization: SampleData.organizations[0]).previewDevice("iPhone SE (2nd generation)")
             .environmentObject(SampleData.adoptMe)
     }
 }
