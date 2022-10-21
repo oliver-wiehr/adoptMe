@@ -115,8 +115,7 @@ class AdoptMe: ObservableObject {
             }
         }
     }
-    
-	var organizations = [Organization]()
+    private var organizations = [String: Organization]()
 	var images = [String: Image]()
 	var breeds: [Breed]?
 	var colors: [String]?
@@ -131,42 +130,6 @@ class AdoptMe: ObservableObject {
             self.search = search
         }
         self.recentSearches = Persistence.getRecentSearches()
-	}
-	
-	func loadOrganizations(_ completion: @escaping () -> Void) {
-		guard let search = search, let location = location else {
-			completion()
-			return
-		}
-
-        API.fetchOrganizations(location: location, distance: search.distance) { organizationsQuery in
-			guard let organizationsQuery = organizationsQuery, let organizations = organizationsQuery.organizations else {
-				print("network error")
-				completion()
-				return
-			}
-            
-            self.organizations = organizations
-            
-            var pagesFetched = 1
-            if organizationsQuery.pagination.totalPages > 1 {
-                for page in 2...organizationsQuery.pagination.totalPages {
-                    API.fetchOrganizations(location: location, distance: search.distance, page: page) { nextQuery in
-                        guard let nextQuery = nextQuery, let organizations = nextQuery.organizations else {
-                            print("network error")
-                            return
-                        }
-                        
-                        self.organizations.append(contentsOf: organizations)
-                        
-                        pagesFetched += 1
-                        if pagesFetched == organizationsQuery.pagination.totalPages {
-                            completion()
-                        }
-                    }
-                }
-            }
-		}
 	}
 	
     func loadAnimalTypes(_ completion: @escaping () -> Void) {
@@ -215,9 +178,7 @@ class AdoptMe: ObservableObject {
 	}
 	
 	func refresh() {
-		self.loadOrganizations() {
-			self.loadAnimals()
-		}
+        self.loadAnimals()
 	}
     
 	func loadAnimals() {
@@ -226,28 +187,35 @@ class AdoptMe: ObservableObject {
 		}
 
 		API.fetchAnimals(search, location: location, page: page) { animalResult in
-			guard let animalResult = animalResult else {
-				return
-			}
-			
-			DispatchQueue.main.async {
-				self.searchResults = {
-					var searchResults = [SearchResult]()
-					var id = 0
-					for animal in animalResult.animals {
-						if let organization = self.organizations.first(where: { organization in
-							organization.id == animal.organizationId
-						}) {
-							searchResults.append(SearchResult(animal: animal, organization: organization))
-							id += 1
-                        }
-					}
-					
-					return searchResults
-				}()
-			}
-		}
-	}
+            guard let animalResult = animalResult else {
+                return
+            }
+            
+            for animal in animalResult.animals {
+                self.loadOrganization(animal.organizationId) { organization in
+                    DispatchQueue.main.async {
+                        guard let organization = organization else { return }
+                        self.searchResults.append(SearchResult(animal: animal, organization: organization))
+                    }
+                }
+            }
+        }
+    }
+    
+    func loadOrganization(_ organizationId: String, completion: @escaping (Organization?) -> Void) {
+        if let organization = self.organizations[organizationId] {
+            completion(organization)
+            return
+        }
+        
+        API.fetchOrganization(organizationId) { organizationQuery in
+            if let orgaization = organizationQuery?.organization {
+                self.organizations[organizationId] = orgaization
+            }
+            
+            completion(organizationQuery?.organization)
+        }
+    }
 	
 	func isSelected(_ filterOption: String, filter: String) -> Bool {
 		guard let search = search else {
