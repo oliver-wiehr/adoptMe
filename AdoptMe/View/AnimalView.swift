@@ -117,33 +117,51 @@ struct AnimalHealthView: View {
 
 struct AnimalOrganizationView: View {
     @EnvironmentObject var adoptMe: AdoptMe
-	var organization: Organization
-	
-	var body: some View {
-		VStack {
-			HStack {
-				Rectangle()
+    var organization: Organization
+    
+    var body: some View {
+        VStack {
+            HStack {
+                
+                if let photo = organization.photos.first, let imageURL = URL(string: photo.largeSize!) {
+                    AsyncImage(url: imageURL) { image in
+                        image.resizable()
+                            .aspectRatio(contentMode: .fill)
+                    } placeholder: {
+                        ProgressView()
+                    }
                     .frame(width: 50.0, height: 50.0)
-                    .aspectRatio(1.0, contentMode: .fit)
-                    .foregroundColor(.gray)
                     .cornerRadius(/*@START_MENU_TOKEN@*/5.0/*@END_MENU_TOKEN@*/)
+                }
                 VStack {
                     Text(organization.name)
                     Text(organization.address?.city ?? "")
                 }
             }
             HStack {
-                Image(systemName: "phone.fill")
-                Image(systemName: "envelope.fill")
-            }.padding()
+                Button {
+                    adoptMe.callPhone(organization.phone!)
+                } label: {
+                    Image(systemName: "phone.fill")
+                }
+                .disabled(organization.phone == nil)
+                Spacer()
+                Button {
+                    adoptMe.writeEmail(organization.email!)
+                } label: {
+                    Image(systemName: "envelope.fill")
+                }
+                .disabled(organization.email == nil)
+            }
+            .frame(maxWidth: 100)
+            .padding()
             
-            
-            OrganizationMap(
-                organization: organization,
-                region: MKCoordinateRegion(center: organization.address?.coordinate ??
-                                           CLLocationCoordinate2D(latitude: 0, longitude: 0)
-                                           , latitudinalMeters: 7500, longitudinalMeters: 7500)
-            )
+            if let location = organization.address?.coordinate {
+                OrganizationMap(
+                    organization: organization,
+                    region: MKCoordinateRegion(center: location, latitudinalMeters: 7500, longitudinalMeters: 7500)
+                )
+            }
         }
     }
 }
@@ -154,9 +172,7 @@ struct OrganizationMap : View {
     
     var body: some View {
         Map(coordinateRegion: $region, annotationItems: [organization]) { place in
-            MapMarker(coordinate: organization.address?.coordinate ??
-                      CLLocationCoordinate2D(latitude: 0, longitude: 0),
-                      tint: Color.purple)
+            MapMarker(coordinate: organization.address!.coordinate!, tint: .accentColor)
         }
         .cornerRadius(5.0)
         .aspectRatio(1.0, contentMode: .fit)

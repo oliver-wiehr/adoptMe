@@ -248,4 +248,18 @@ class AdoptMe: ObservableObject {
 			self.search?.filters[filter] = [filterOption]
 		}
 	}
+    
+    func callPhone(_ phone: String) {
+        if let url = URL(string: "tel://\(phone.filter("0123456789".contains))"), UIApplication.shared.canOpenURL(url) {
+          UIApplication.shared.open(url)
+        } else {
+            print("can't call phone \("tel://\(phone.filter("0123456789".contains))")")
+        }
+    }
+    
+    func writeEmail(_ email: String) {
+        if let url = URL(string: "mailto:\(email)"), UIApplication.shared.canOpenURL(url) {
+          UIApplication.shared.open(url)
+        }
+    }
 }
