@@ -63,9 +63,7 @@ class AdoptMe: ObservableObject {
                 if let animalType = animalTypes.first(where: { animalType in
                     animalType.name.lowercased() == search.animalType.lowercased()
                 }) {
-                    self.colors = animalType.colors
-                    self.coats = animalType.coats
-                    self.genders = animalType.genders
+                    self.animalType = animalType
                 } else {
                     self.search = nil
                 }
@@ -95,9 +93,7 @@ class AdoptMe: ObservableObject {
                 if let animalType = animalTypes?.first(where: { animalType in
                     animalType.name.lowercased() == search.animalType.lowercased()
                 }) {
-                    self.colors = animalType.colors
-                    self.coats = animalType.coats
-                    self.genders = animalType.genders
+                    self.animalType = animalType
                 } else {
                     self.search = nil
                 }
@@ -118,17 +114,15 @@ class AdoptMe: ObservableObject {
     private var organizations = [String: Organization]()
 	var images = [String: Image]()
 	var breeds: [Breed]?
-	var colors: [String]?
-	var coats: [String]?
-	var genders: [String]?
-	var page = 1
-	
+    var animalType: AnimalType?
+    var page = 1
+    
     init(search: Search?, location: String?) {
         self.favorites = Persistence.getFavorites()
-        loadAnimalTypes() {
-            self.location = location
+        self.loadAnimalTypes() {
             self.search = search
         }
+        self.location = location
         self.recentSearches = Persistence.getRecentSearches()
 	}
 	

@@ -183,16 +183,16 @@ struct FilterSelectionView: View {
 				FilterView(filter: Filter(id: filter.id, title: filter.title, options: adoptMe.breeds?.map {
 					FilterOption(id: $0.name, title: $0.name)
                 } ?? []), selectionAction: selectionAction)
-			case "colors":
-				FilterView(filter: Filter(id: filter.id, title: filter.title, options: adoptMe.colors?.map {
+			case "color":
+                FilterView(filter: Filter(id: filter.id, title: filter.title, options: adoptMe.animalType?.colors.map {
 					FilterOption(id: $0, title: $0)
                 } ?? []), selectionAction: selectionAction)
-			case "coats":
-				FilterView(filter: Filter(id: filter.id, title: filter.title, options: adoptMe.coats?.map {
+			case "coat":
+                FilterView(filter: Filter(id: filter.id, title: filter.title, options: adoptMe.animalType?.coats.map {
 					FilterOption(id: $0, title: $0)
                 } ?? []), selectionAction: selectionAction)
-			case "genders":
-				FilterView(filter: Filter(id: filter.id, title: filter.title, options: adoptMe.genders?.map {
+			case "gender":
+                FilterView(filter: Filter(id: filter.id, title: filter.title, options: adoptMe.animalType?.genders.map {
 					FilterOption(id: $0, title: $0)
                 } ?? []), selectionAction: selectionAction)
 			default:
