@@ -17,7 +17,9 @@ struct AnimalView: View {
 		NavigationView {
 			ScrollView {
 				VStack(alignment: .leading) {
-					AnimalImageView(photos: animal.photos)
+                    if animal.photos.count > 0 {
+                        AnimalImageView(photos: animal.photos)
+                    }
 					AnimalInfoView(breeds: animal.breeds, age: animal.age, gender: animal.gender)
 					AnimalAboutView(description: animal.description)
 					if let attributes = animal.attributes {
@@ -60,7 +62,6 @@ struct AnimalImageView: View {
                         ProgressView()
                     }
                 }
-
             }
         }
 			.tabViewStyle(.page)
@@ -110,7 +111,7 @@ struct AnimalHealthView: View {
 		VStack(alignment: .leading) {
 			Text("Health")
 				.font(.title2)
-			Text("")
+            Text("")
 		}.padding()
 	}
 }
