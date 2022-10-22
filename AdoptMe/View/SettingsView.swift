@@ -17,7 +17,7 @@ struct SettingsView: View {
 				VStack() {
 					NewSearchView(showSettingsView: $show).padding()
                     RecentSearchesView(showSettingsView: $show).padding()
-                    ChangeLocationView(location: $adoptMe.location).padding()
+                    ChangeLocationView(location: $adoptMe.location, distance: $adoptMe.distance).padding()
 					CopyRightView().padding()
 				}
 			}
@@ -143,7 +143,9 @@ struct RecentSearchesView: View {
 
 struct ChangeLocationView: View {
 	@State private var zipCode: String = ""
+    @State var miles: Float = 100
     @Binding var location: String?
+    @Binding var distance: String?
     
     @EnvironmentObject var adoptMe: AdoptMe
 	
@@ -159,14 +161,36 @@ struct ChangeLocationView: View {
 					.padding(6)
 			}
 			.frame(maxWidth: 200)
+            Text("Distance")
+                .font(.title3)
+            Text("\(Int(miles)) miles")
+            Slider(value: $miles, in: 10...500, step: 1) { value in
+                print(value)
+            }
 			Button {
                 adoptMe.searchResults = []
                 adoptMe.location = zipCode
+                adoptMe.distance = String(miles)
+                adoptMe.refresh()
                 zipCode = ""
 			} label: {
 				Text("Set")
 			}
-            .disabled(!ZipCodes.validate(zipCode))
+            .disabled({
+                if ZipCodes.validate(zipCode) {
+                    return false
+                }
+                
+                if zipCode.isEmpty {
+                    if let distance = distance {
+                        if Int(distance) != Int(miles) {
+                            return false
+                        }
+                    }
+                }
+                    
+                return true
+            }())
 		}
 	}
 }

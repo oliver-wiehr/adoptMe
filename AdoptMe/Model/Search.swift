@@ -10,10 +10,6 @@ import Foundation
 struct Search: Codable {
 	var animalType: String
 	var filters: [String: [String]]
-    
-    var distance: String {
-        return filters["distance"]?[0] ?? "100"
-    }
 	
 	enum CodingKeys: String, CodingKey {
 		case animalType = "animalType"

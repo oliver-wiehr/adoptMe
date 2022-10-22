@@ -36,7 +36,6 @@ class AdoptMe: ObservableObject {
 			FilterOption(id: "senior", title: "Senior")
 		]),
 		Filter(id: "gender", title: "Gender", options: []),
-		Filter(id: "distance", title: "Distance", options: []),
 		Filter(id: "goodWith", title: "Good With", options: [
 			FilterOption(id: "dogs", title: "Dogs"),
 			FilterOption(id: "cats", title: "Cats"),
@@ -80,9 +79,14 @@ class AdoptMe: ObservableObject {
         didSet {
             if let location = location {
                 Persistence.setLocation(location)
-                if search != nil {
-                    refresh()
-                }
+            }
+        }
+    }
+    
+    @Published var distance: String? {
+        didSet {
+            if let distance = distance {
+                Persistence.setDistance(distance)
             }
         }
     }
@@ -117,12 +121,13 @@ class AdoptMe: ObservableObject {
     var animalType: AnimalType?
     var page = 1
     
-    init(search: Search?, location: String?) {
+    init(search: Search?, location: String?, distance: String?) {
         self.favorites = Persistence.getFavorites()
         self.loadAnimalTypes() {
             self.search = search
         }
         self.location = location
+        self.distance = distance
         self.recentSearches = Persistence.getRecentSearches()
 	}
 	
@@ -180,7 +185,7 @@ class AdoptMe: ObservableObject {
 			return
 		}
 
-		API.fetchAnimals(search, location: location, page: page) { animalResult in
+        API.fetchAnimals(search, location: location, distance: distance ?? "100", page: page) { animalResult in
             guard let animalResult = animalResult else {
                 return
             }

@@ -54,6 +54,14 @@ class Persistence {
         return UserDefaults.standard.object(forKey: "location") as? String
     }
     
+    static func setDistance(_ distance: String) {
+        UserDefaults.standard.set(distance, forKey: "distance")
+    }
+    
+    static func getDistance() -> String? {
+        return UserDefaults.standard.object(forKey: "distance") as? String
+    }
+    
     static func setFavorites(_ favorites: [SearchResult]) {
         if let encoded = try? JSONEncoder().encode(favorites) {
             UserDefaults.standard.set(encoded, forKey: "favorites")
