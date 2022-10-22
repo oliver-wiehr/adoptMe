@@ -22,9 +22,7 @@ struct AnimalView: View {
                     }
 					AnimalInfoView(breeds: animal.breeds, age: animal.age, gender: animal.gender)
 					AnimalAboutView(description: animal.description)
-					if let attributes = animal.attributes {
-						AnimalHealthView(attributes: attributes)
-					}
+                    AnimalHealthView(attributes: animal.attributes)
 					AnimalOrganizationView(organization: organization)
 					Spacer()
 				}
@@ -105,13 +103,13 @@ struct AnimalAboutView: View {
 }
 
 struct AnimalHealthView: View {
-	var attributes: Attributes
+	var attributes: Attributes?
 	
 	var body: some View {
 		VStack(alignment: .leading) {
 			Text("Health")
 				.font(.title2)
-            Text("")
+            Text(attributes?.description ?? "Contact my shelter to find out more about my health.")
 		}.padding()
 	}
 }
