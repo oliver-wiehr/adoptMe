@@ -11,7 +11,7 @@ struct WalkthroughView: View {
 	@EnvironmentObject var adoptMe: AdoptMe
 	@Binding var show: Bool
 	@State var page = 0
-	@State var location = ""
+    @ObservedObject var locationManager = LocationManager()
     @State var animalType = ""
     
     var body: some View {
@@ -30,7 +30,8 @@ struct WalkthroughView: View {
                     .font(.title2)
                     .multilineTextAlignment(.center)
                     .transition(.opacity)
-                WalkthroughLocationView(location: $location).transition(.backslide)
+                WalkthroughLocationView().transition(.backslide)
+                    .environmentObject(locationManager)
             default:
                 Text("What are you looking for?")
                     .font(.title2)
@@ -41,7 +42,7 @@ struct WalkthroughView: View {
             if page < 2 {
                 Button {
                     if page == 1 {
-                        adoptMe.location = location
+                        adoptMe.location = locationManager.location
                     }
                     if page < 2 {
                         withAnimation {
@@ -60,7 +61,7 @@ struct WalkthroughView: View {
                 }
                 .disabled({
                     if page == 1 {
-                        return !ZipCodes.validate(location)
+                        return !ZipCodes.validate(locationManager.location)
                     }
                     return false
                 }())
@@ -71,7 +72,7 @@ struct WalkthroughView: View {
 }
 
 struct WalkthroughLocationView: View {
-    @Binding var location: String
+    @EnvironmentObject var locationManager: LocationManager
 	
 	var body: some View {
 		VStack {
@@ -81,8 +82,19 @@ struct WalkthroughLocationView: View {
 				ZStack {
 				 RoundedRectangle(cornerRadius: 5)
 					 .foregroundColor(.gray)
-					TextField("Zip Code", text: $location)
-					 .padding(6)
+                    HStack {
+                        TextField("Zip Code", text: $locationManager.location)
+                        if locationManager.isLoadingLocation {
+                            ProgressView()
+                        } else {
+                            Button {
+                                locationManager.requestLocation()
+                            } label: {
+                                Image(systemName: "location.circle")
+                            }
+                        }
+                    }
+                    .padding(6)
 				}.frame(maxHeight: 40)
 				Spacer()
 			}
@@ -126,7 +138,7 @@ struct WalkthroughAnimalTypeView: View {
 	var body: some View {
 		ZStack {
 			RoundedRectangle(cornerRadius: 5)
-				.foregroundColor(self.animalType == selectedAnimalType ? .accentColor : .gray)
+                .foregroundColor(.gray)
 			Text(animalType ?? "Other")
 		}.onTapGesture {
 			if let animalType = animalType {

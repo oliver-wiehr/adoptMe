@@ -17,7 +17,7 @@ struct SettingsView: View {
 				VStack() {
 					NewSearchView(showSettingsView: $show).padding()
                     RecentSearchesView(showSettingsView: $show).padding()
-                    ChangeLocationView(location: $adoptMe.location, distance: $adoptMe.distance).padding()
+                    ChangeLocationView(miles: Float(adoptMe.distance) ?? 100, location: $adoptMe.location, distance: $adoptMe.distance).padding()
 					CopyRightView().padding()
 				}
 			}
@@ -50,7 +50,6 @@ struct NewSearchView: View {
 				AnimalTypeView(showSettingsView: $showSettingsView, animalType: "Dog")
 				AnimalTypeView(showSettingsView: $showSettingsView, animalType: "Cat")
 				AnimalTypeView(showSettingsView: $showSettingsView, animalType: nil)
-					.frame(height: 134)
 			}
 		}
 	}
@@ -65,8 +64,16 @@ struct AnimalTypeView: View {
 	
 	var body: some View {
 		ZStack {
-			RoundedRectangle(cornerRadius: 5)
-				.foregroundColor(.gray)
+            if let animalType = animalType {
+                Image(animalType.lowercased())
+                    .resizable()
+                    .aspectRatio(0.75, contentMode: .fill)
+                    .cornerRadius(5)
+            } else {
+                RoundedRectangle(cornerRadius: 5)
+                    .aspectRatio(0.75, contentMode: .fill)
+                    .foregroundColor(.gray)
+            }
 			Text(animalType ?? "Other")
 		}.onTapGesture {
 			if let animalType = animalType {
@@ -111,9 +118,19 @@ struct RecentSearchView: View {
                     Text("\(search.filters.count) filters")
 				}
 				Spacer()
-				RoundedRectangle(cornerRadius: 5)
-					.aspectRatio(1.0, contentMode: .fit)
-					.foregroundColor(.black)
+                if let animalType = search.animalType, ["dog", "cat"].contains(animalType.lowercased()) {
+                    Image(animalType.lowercased())
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 100, height: 100)
+                        .clipped()
+                        .cornerRadius(5)
+                } else {
+                    RoundedRectangle(cornerRadius: 5)
+                        .aspectRatio(1.0, contentMode: .fit)
+                        .foregroundColor(.black)
+                        .frame(width: 100, height: 100)
+                }
 			}.padding()
 		}
         .frame(height: 134)
@@ -142,12 +159,13 @@ struct RecentSearchesView: View {
 }
 
 struct ChangeLocationView: View {
-	@State private var zipCode: String = ""
-    @State var miles: Float = 100
+    @State var miles: Float
+
     @Binding var location: String?
     @Binding var distance: String?
     
     @EnvironmentObject var adoptMe: AdoptMe
+    @ObservedObject var locationManager = LocationManager()
 	
 	var body: some View {
 		VStack {
@@ -157,10 +175,21 @@ struct ChangeLocationView: View {
 			ZStack {
 				RoundedRectangle(cornerRadius: 5)
 					.foregroundColor(.gray)
-				TextField("Zip Code", text: $zipCode)
-					.padding(6)
+				HStack {
+            TextField("Zip Code", text: $locationManager.location)
+            if locationManager.isLoadingLocation {
+                ProgressView()
+            } else {
+                Button {
+                    locationManager.requestLocation()
+                } label: {
+                    Image(systemName: "location.circle")
+                }
+            }
+        }
+        .padding(6)
 			}
-			.frame(maxWidth: 200)
+			.frame(maxWidth: 250)
             Text("Distance")
                 .font(.title3)
             Text("\(Int(miles)) miles")
@@ -176,21 +205,21 @@ struct ChangeLocationView: View {
 			} label: {
 				Text("Set")
 			}
-            .disabled({
-                if ZipCodes.validate(zipCode) {
-                    return false
-                }
-                
-                if zipCode.isEmpty {
-                    if let distance = distance {
-                        if Int(distance) != Int(miles) {
-                            return false
-                        }
+        .disabled({
+            if ZipCodes.validate(locationManager.location) {
+                return false
+            }
+
+            if zipCode.isEmpty {
+                if let distance = distance {
+                    if Int(distance) != Int(miles) {
+                        return false
                     }
                 }
-                    
-                return true
-            }())
+            }
+
+            return true
+        }())
 		}
 	}
 }

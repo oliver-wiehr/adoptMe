@@ -22,6 +22,7 @@
 		A7564C572783534C00CC1CD5 /* zipcodes.json in Resources */ = {isa = PBXBuildFile; fileRef = A7564C562783534C00CC1CD5 /* zipcodes.json */; };
 		A7564C5927835E4800CC1CD5 /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7564C5827835E4800CC1CD5 /* SampleData.swift */; };
 		A7564C5B2783A3E800CC1CD5 /* AdoptMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7564C5A2783A3E800CC1CD5 /* AdoptMe.swift */; };
+		A76F2C0C2904B8FD0076B529 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76F2C0B2904B8FD0076B529 /* LocationManager.swift */; };
 		A79134752789E5300032B3C1 /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79134742789E5300032B3C1 /* FilterView.swift */; };
 		A7D719BA2786376900DF8914 /* Queries.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D719B92786376900DF8914 /* Queries.swift */; };
 		A7D719BC278640BB00DF8914 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D719BB278640BB00DF8914 /* SettingsView.swift */; };
@@ -48,6 +49,7 @@
 		A7564C562783534C00CC1CD5 /* zipcodes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = zipcodes.json; sourceTree = "<group>"; };
 		A7564C5827835E4800CC1CD5 /* SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
 		A7564C5A2783A3E800CC1CD5 /* AdoptMe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdoptMe.swift; sourceTree = "<group>"; };
+		A76F2C0B2904B8FD0076B529 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		A79134742789E5300032B3C1 /* FilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
 		A7D719B92786376900DF8914 /* Queries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queries.swift; sourceTree = "<group>"; };
 		A7D719BB278640BB00DF8914 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 				A7564C562783534C00CC1CD5 /* zipcodes.json */,
 				A7564C532783531A00CC1CD5 /* LemonJelly.ttf */,
 				A72247932780FE9C00064273 /* Assets.xcassets */,
+				A76F2C0B2904B8FD0076B529 /* LocationManager.swift */,
 			);
 			path = "Assisting Files";
 			sourceTree = "<group>";
@@ -232,6 +235,7 @@
 				A7564C552783532600CC1CD5 /* ZipCodes.swift in Sources */,
 				A72247902780FE9A00064273 /* AdoptMeApp.swift in Sources */,
 				A7564C4E278352D500CC1CD5 /* API.swift in Sources */,
+				A76F2C0C2904B8FD0076B529 /* LocationManager.swift in Sources */,
 				A7564C492783529000CC1CD5 /* Search.swift in Sources */,
 				A7D719C62786911F00DF8914 /* FavoritesView.swift in Sources */,
 				A7564C442783529000CC1CD5 /* Animal.swift in Sources */,
