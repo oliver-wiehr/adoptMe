@@ -126,7 +126,7 @@ struct WalkthroughAnimalTypeView: View {
 	var body: some View {
 		ZStack {
 			RoundedRectangle(cornerRadius: 5)
-				.foregroundColor(self.animalType == selectedAnimalType ? .accentColor : .gray)
+                .foregroundColor(.gray)
 			Text(animalType ?? "Other")
 		}.onTapGesture {
 			if let animalType = animalType {

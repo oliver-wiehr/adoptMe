@@ -50,7 +50,6 @@ struct NewSearchView: View {
 				AnimalTypeView(showSettingsView: $showSettingsView, animalType: "Dog")
 				AnimalTypeView(showSettingsView: $showSettingsView, animalType: "Cat")
 				AnimalTypeView(showSettingsView: $showSettingsView, animalType: nil)
-					.frame(height: 134)
 			}
 		}
 	}
@@ -65,8 +64,16 @@ struct AnimalTypeView: View {
 	
 	var body: some View {
 		ZStack {
-			RoundedRectangle(cornerRadius: 5)
-				.foregroundColor(.gray)
+            if let animalType = animalType {
+                Image(animalType.lowercased())
+                    .resizable()
+                    .aspectRatio(0.75, contentMode: .fill)
+                    .cornerRadius(5)
+            } else {
+                RoundedRectangle(cornerRadius: 5)
+                    .aspectRatio(0.75, contentMode: .fill)
+                    .foregroundColor(.gray)
+            }
 			Text(animalType ?? "Other")
 		}.onTapGesture {
 			if let animalType = animalType {
@@ -111,9 +118,19 @@ struct RecentSearchView: View {
                     Text("\(search.filters.count) filters")
 				}
 				Spacer()
-				RoundedRectangle(cornerRadius: 5)
-					.aspectRatio(1.0, contentMode: .fit)
-					.foregroundColor(.black)
+                if let animalType = search.animalType, ["dog", "cat"].contains(animalType.lowercased()) {
+                    Image(animalType.lowercased())
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 100, height: 100)
+                        .clipped()
+                        .cornerRadius(5)
+                } else {
+                    RoundedRectangle(cornerRadius: 5)
+                        .aspectRatio(1.0, contentMode: .fit)
+                        .foregroundColor(.black)
+                        .frame(width: 100, height: 100)
+                }
 			}.padding()
 		}
         .frame(height: 134)
