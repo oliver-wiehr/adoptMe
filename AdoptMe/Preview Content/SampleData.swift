@@ -39,6 +39,7 @@ class SampleData {
 	)]
     
     static let location = "77007"
+    static let distance = "100"
 	
 	static let organizations = [
 		Organization(
@@ -82,7 +83,7 @@ class SampleData {
 	]
 	
 	static let adoptMe: AdoptMe = {
-        let adoptMe = AdoptMe(search: SampleData.search, location: SampleData.location)
+        let adoptMe = AdoptMe(search: SampleData.search, location: SampleData.location, distance: SampleData.distance)
 		adoptMe.searchResults = SampleData.searchResults
 		adoptMe.favorites = SampleData.favorites
 		return adoptMe

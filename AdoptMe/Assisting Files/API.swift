@@ -77,7 +77,7 @@ class API {
 		}
 	}
 	
-    static func fetchAnimals(_ search: Search, location: String, page: Int, completion: @escaping (AnimalsQuery?) -> Void) {
+    static func fetchAnimals(_ search: Search, location: String, distance: String, page: Int, completion: @escaping (AnimalsQuery?) -> Void) {
 		var parameters = [String: String]()
 		
 		for key in search.filters.keys {
@@ -87,6 +87,7 @@ class API {
 		parameters["type"] = search.animalType
 		parameters["page"] = String(page)
 		parameters["location"] = location
+        parameters["distance"] = distance
 		
 		performRequest(category: "animals", parameters: parameters) { data in
 			guard let data = data else {
