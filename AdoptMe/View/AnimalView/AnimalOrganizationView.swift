@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct AnimalOrganizationView: View {
     @EnvironmentObject var adoptMe: AdoptMe

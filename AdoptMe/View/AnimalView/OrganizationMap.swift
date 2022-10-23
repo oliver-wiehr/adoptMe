@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import CoreLocation
+import MapKit
 
 struct OrganizationMap : View {
     var organization: Organization
