@@ -18,16 +18,27 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     override init() {
         super.init()
         locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
     }
     
     func requestLocation() {
-        isLoadingLocation = true
-        locationManager.requestLocation()
+        if [.authorizedAlways, .authorizedWhenInUse].contains(locationManager.authorizationStatus) {
+            locationManager.requestLocation()
+        } else {
+            locationManager.requestWhenInUseAuthorization()
+        }
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         isLoadingLocation = false
         print(error.localizedDescription)
+    }
+    
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        if [.authorizedAlways, .authorizedWhenInUse].contains(locationManager.authorizationStatus) {
+            isLoadingLocation = true
+            locationManager.requestLocation()
+        }
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
