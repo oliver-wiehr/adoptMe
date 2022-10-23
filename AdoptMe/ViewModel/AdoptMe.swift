@@ -8,11 +8,6 @@
 import Foundation
 import SwiftUI
 
-struct SearchResult: Codable {
-	var animal: Animal
-	var organization: Organization
-}
-
 class AdoptMe: ObservableObject {
 	
 	@Published var searchResults = [SearchResult]()
