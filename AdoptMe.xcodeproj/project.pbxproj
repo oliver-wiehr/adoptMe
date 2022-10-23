@@ -233,10 +233,10 @@
 				A7564C4D278352D500CC1CD5 /* API.swift */,
 				A7564C51278352FC00CC1CD5 /* Persistence.swift */,
 				A7564C542783532600CC1CD5 /* ZipCodes.swift */,
+				A76F2C0B2904B8FD0076B529 /* LocationManager.swift */,
 				A7564C562783534C00CC1CD5 /* zipcodes.json */,
 				A7564C532783531A00CC1CD5 /* LemonJelly.ttf */,
 				A72247932780FE9C00064273 /* Assets.xcassets */,
-				A76F2C0B2904B8FD0076B529 /* LocationManager.swift */,
 			);
 			path = "Assisting Files";
 			sourceTree = "<group>";
@@ -639,6 +639,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AdoptMe/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Need location to automatically set search location.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -669,6 +670,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AdoptMe/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Need location to automatically set search location.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
