@@ -36,23 +36,6 @@ struct FilterView: View {
 	}
 }
 
-struct FilterOptionView: View {
-	@EnvironmentObject var adoptMe: AdoptMe
-	var filter: Filter
-	var filterOption: FilterOption
-    var selectionAction: (_ filterOptionId: String) -> Void
-	
-	var body: some View {
-		ZStack {
-			RoundedRectangle(cornerRadius: 5).foregroundColor(adoptMe.isSelected(filterOption.id, filter: filter.id) ? .accentColor : .gray)
-			Text(filterOption.title).font(.headline).padding()
-		}.padding(.horizontal)
-			.onTapGesture {
-                selectionAction(filterOption.id)
-			}
-	}
-}
-
 struct FilterView_Previews: PreviewProvider {
 	static var previews: some View {
         FilterView(filter: SampleData.filter, selectionAction: { filterAction in })
