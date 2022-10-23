@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 final class Address: Codable {
     let geoCoder = CLGeocoder()

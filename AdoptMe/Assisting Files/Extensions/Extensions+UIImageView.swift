@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 extension UIImageView {
     func load(url: URL) {
