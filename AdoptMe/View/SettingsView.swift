@@ -159,10 +159,10 @@ struct RecentSearchesView: View {
 }
 
 struct ChangeLocationView: View {
-	@State private var zipCode: String = ""
     @Binding var location: String?
     
     @EnvironmentObject var adoptMe: AdoptMe
+    @ObservedObject var locationManager = LocationManager()
 	
 	var body: some View {
 		VStack {
@@ -172,18 +172,29 @@ struct ChangeLocationView: View {
 			ZStack {
 				RoundedRectangle(cornerRadius: 5)
 					.foregroundColor(.gray)
-				TextField("Zip Code", text: $zipCode)
-					.padding(6)
-			}
-			.frame(maxWidth: 200)
-			Button {
+                HStack {
+                    TextField("Zip Code", text: $locationManager.location)
+                    if locationManager.isLoadingLocation {
+                        ProgressView()
+                    } else {
+                        Button {
+                            locationManager.requestLocation()
+                        } label: {
+                            Image(systemName: "location.circle")
+                        }
+                    }
+                }
+                .padding(6)
+            }
+            .frame(maxWidth: 250)
+            Button {
                 adoptMe.searchResults = []
-                adoptMe.location = zipCode
-                zipCode = ""
+                adoptMe.location = locationManager.location
+                locationManager.location = ""
 			} label: {
 				Text("Set")
 			}
-            .disabled(!ZipCodes.validate(zipCode))
+            .disabled(!ZipCodes.validate(locationManager.location))
 		}
 	}
 }
