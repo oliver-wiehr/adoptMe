@@ -38,11 +38,11 @@ struct SettingsView: View {
     }
 }
 
-struct SettingsView_Previews: PreviewProvider {
-    @State static var showSettingsView = true
-    
-    static var previews: some View {
-        SettingsView(show: SettingsView_Previews.$showSettingsView)
-            .environmentObject(SampleData.adoptMe)
-    }
-}
+//struct SettingsView_Previews: PreviewProvider {
+//    @State static var showSettingsView = true
+//
+//    static var previews: some View {
+//        SettingsView(show: SettingsView_Previews.$showSettingsView)
+//            .environmentObject(SampleData.adoptMe)
+//    }
+//}

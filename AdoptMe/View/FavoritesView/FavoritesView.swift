@@ -31,11 +31,11 @@ struct FavoritesView: View {
 	}
 }
 
-struct FavoritesView_Previews: PreviewProvider {
-	@State static var showFavoritesView = true
-	
-    static var previews: some View {
-		FavoritesView(show: FavoritesView_Previews.$showFavoritesView)
-            .environmentObject(SampleData.adoptMe)
-    }
-}
+//struct FavoritesView_Previews: PreviewProvider {
+//	@State static var showFavoritesView = true
+//
+//    static var previews: some View {
+//		FavoritesView(show: FavoritesView_Previews.$showFavoritesView)
+//            .environmentObject(SampleData.adoptMe)
+//    }
+//}
