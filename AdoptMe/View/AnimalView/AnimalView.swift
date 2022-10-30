@@ -46,11 +46,11 @@ struct AnimalView: View {
 	}
 }
 
-struct AnimalView_Previews: PreviewProvider {
-    static var previews: some View {
-        AnimalView(animal: SampleData.animals[0], organization: SampleData.organizations[0]).preferredColorScheme(.dark)
-            .environmentObject(SampleData.adoptMe)
-        AnimalView(animal: SampleData.animals[0], organization: SampleData.organizations[0]).previewDevice("iPhone SE (2nd generation)")
-            .environmentObject(SampleData.adoptMe)
-    }
-}
+//struct AnimalView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        AnimalView(animal: SampleData.animals[0], organization: SampleData.organizations[0]).preferredColorScheme(.dark)
+//            .environmentObject(SampleData.adoptMe)
+//        AnimalView(animal: SampleData.animals[0], organization: SampleData.organizations[0]).previewDevice("iPhone SE (2nd generation)")
+//            .environmentObject(SampleData.adoptMe)
+//    }
+//}

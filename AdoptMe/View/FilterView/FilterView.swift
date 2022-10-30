@@ -36,9 +36,9 @@ struct FilterView: View {
 	}
 }
 
-struct FilterView_Previews: PreviewProvider {
-	static var previews: some View {
-        FilterView(filter: SampleData.filter, selectionAction: { filterAction in })
-            .environmentObject(SampleData.adoptMe)
-	}
-}
+//struct FilterView_Previews: PreviewProvider {
+//	static var previews: some View {
+//        FilterView(filter: SampleData.filter, selectionAction: { filterAction in })
+//            .environmentObject(SampleData.adoptMe)
+//	}
+//}
