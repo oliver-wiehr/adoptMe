@@ -23,8 +23,6 @@ struct SearchView: View {
 					FiltersSelectionView()
 					SearchResultsView()
 				}
-				.navigationTitle("AdoptMe")
-				.navigationBarTitleDisplayMode(.inline)
 				.toolbar {
 					ToolbarItem(placement: .navigationBarLeading) {
 						Button {
@@ -45,6 +43,8 @@ struct SearchView: View {
 						}
 					}
 				}
+                .navigationTitle("AdoptMe")
+                .navigationBarTitleDisplayMode(.inline)
 			}.navigationViewStyle(StackNavigationViewStyle())
         }
     }
