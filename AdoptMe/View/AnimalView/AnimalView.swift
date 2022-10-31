@@ -12,6 +12,7 @@ struct AnimalView: View {
 	@EnvironmentObject var adoptMe: AdoptMe
 	var animal: Animal
 	var organization: Organization
+    @SwiftUI.Environment(\.presentationMode) var presentation
 	
 	var body: some View {
 		NavigationView {
@@ -27,9 +28,16 @@ struct AnimalView: View {
 					Spacer()
 				}
 			}
-			.navigationTitle(Text(animal.name))
+            .navigationTitle(animal.name)
 			.navigationBarTitleDisplayMode(.inline)
 			.toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        self.presentation.wrappedValue.dismiss()
+                    } label: {
+                        Image(systemName: "chevron.left")
+                    }
+                }
 				ToolbarItem(placement: .navigationBarTrailing) {
 					Button {
                         if adoptMe.favorites.contains(where: { $0.animal.id == animal.id }) {
@@ -43,6 +51,7 @@ struct AnimalView: View {
 				}
 			}
 		}.navigationViewStyle(StackNavigationViewStyle())
+            .navigationBarBackButtonHidden(true)
 	}
 }
 

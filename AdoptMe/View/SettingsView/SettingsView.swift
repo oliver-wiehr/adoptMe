@@ -32,7 +32,7 @@ struct SettingsView: View {
                     }
                 }
             }
-            .navigationTitle(Text("Settings"))
+            .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
         }.navigationViewStyle(StackNavigationViewStyle())
     }
