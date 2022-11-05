@@ -34,11 +34,6 @@ class AdoptMe: ObservableObject {
     }
 	
 	@Published var filters = [
-		Filter(id: "sortBy", title: "Sort By", options: [
-			FilterOption(id: "recent", title: "Most Recent"),
-			FilterOption(id: "distance", title: "Nearest"),
-			FilterOption(id: "random", title: "Random")
-		]),
 		Filter(id: "age", title: "Age", options: [
 			FilterOption(id: "baby", title: "Baby"),
 			FilterOption(id: "young", title: "Young"),
