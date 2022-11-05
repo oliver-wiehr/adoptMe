@@ -10,11 +10,12 @@ import SwiftUI
 struct SearchResultView: View {
     @EnvironmentObject var adoptMe: AdoptMe
     
-    var searchResult: SearchResult
+    var animal: Animal
+    var organization: Organization
     
     var body: some View {
         HStack {
-            if let imageURLString = searchResult.animal.previewImageURL, let imageURL = URL(string: imageURLString) {
+            if let imageURLString = animal.previewImageURL, let imageURL = URL(string: imageURLString) {
                 AsyncImage(url: imageURL, content: { image in
                     image.resizable()
                         .aspectRatio(contentMode: .fill)
@@ -31,24 +32,24 @@ struct SearchResultView: View {
             }
             VStack(alignment: .leading) {
                 HStack {
-                    Text(searchResult.animal.name).font(.headline)
+                    Text(animal.name).font(.headline)
                     Spacer()
                     Button {
-                        if adoptMe.favorites.contains(where: { $0.animal.id == searchResult.animal.id }) {
-                            adoptMe.favorites.removeAll(where: { $0.animal.id == searchResult.animal.id })
+                        if adoptMe.favorites.contains(animal.id) {
+                            adoptMe.favorites.removeAll(where: { $0 == animal.id })
                         } else {
-                            adoptMe.favorites.insert(searchResult, at: 0)
+                            adoptMe.favorites.insert(animal.id, at: 0)
                         }
                     } label: {
-                        Image(systemName: adoptMe.favorites.contains(where: { $0.animal.id == searchResult.animal.id }) ? "heart.fill" : "heart")
+                        Image(systemName: adoptMe.favorites.contains(animal.id) ? "heart.fill" : "heart")
                     }
                     .frame(width: 18.0, height: 18.0)
                 }
-                Text(searchResult.animal.age ?? "").font(.subheadline)
-                Text(searchResult.animal.size ?? "").font(.subheadline)
-                Text(searchResult.animal.breeds?.primary ?? "").font(.subheadline)
+                Text(animal.age ?? "").font(.subheadline)
+                Text(animal.size ?? "").font(.subheadline)
+                Text(animal.breeds?.primary ?? "").font(.subheadline)
                 Spacer()
-                Text(searchResult.organization.name).font(.headline)
+                Text(organization.name).font(.headline)
             }.padding(4.0)
         }.padding(12.0)
     }

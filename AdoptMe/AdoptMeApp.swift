@@ -20,9 +20,7 @@ struct AdoptMeApp: App {
         WindowGroup {
             SearchView()
                 .environmentObject(adoptMe)
-                .fullScreenCover(isPresented: $showWalkthrough) {
-                    
-                } content: {
+                .fullScreenCover(isPresented: $showWalkthrough) { } content: {
                     WalkthroughView(show: $showWalkthrough)
                         .environmentObject(adoptMe)
                 }

@@ -21,16 +21,18 @@ struct SearchResultsView: View {
         } else {
             ScrollView {
                 LazyVStack {
-                    ForEach(adoptMe.searchResults.indices, id: \.self) { index in
-                        let searchResult = adoptMe.searchResults[index]
-                        NavigationLink {
-                            AnimalView(
-                                animal: searchResult.animal,
-                                organization: searchResult.organization
-                            )
-                        } label: {
-                            SearchResultView(searchResult: searchResult)
-                        }.buttonStyle(.plain)
+                    ForEach(adoptMe.searchResults, id: \.self) { animalId in
+                        if let animal = adoptMe.animals[animalId], let organization = adoptMe.organizations[animal.organizationId] {
+                            NavigationLink {
+                                AnimalView(
+                                    animal: animal,
+                                    organization: organization
+                                )
+                            } label: {
+                                SearchResultView(animal: animal, organization: organization)
+                                    .onAppear { adoptMe.loadNextPageIfNeeded(animalId) }
+                            }.buttonStyle(.plain)
+                        }
                     }
                 }
             }.layoutPriority(1)

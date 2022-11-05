@@ -40,13 +40,13 @@ struct AnimalView: View {
                 }
 				ToolbarItem(placement: .navigationBarTrailing) {
 					Button {
-                        if adoptMe.favorites.contains(where: { $0.animal.id == animal.id }) {
-                            adoptMe.favorites.removeAll(where: { $0.animal.id == animal.id })
+                        if adoptMe.favorites.contains(animal.id) {
+                            adoptMe.favorites.removeAll(where: { $0 == animal.id })
                         } else {
-                            adoptMe.favorites.insert(SearchResult(animal: animal, organization: organization), at: 0)
+                            adoptMe.favorites.insert(animal.id, at: 0)
                         }
 					} label: {
-						Image(systemName: adoptMe.favorites.contains(where: { $0.animal.id == animal.id }) ? "heart.fill" : "heart")
+						Image(systemName: adoptMe.favorites.contains(where: { $0 == animal.id }) ? "heart.fill" : "heart")
 					}
 				}
 			}

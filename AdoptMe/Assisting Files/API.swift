@@ -22,253 +22,110 @@ class API {
 	
 	static var tokenExpiration = 0.0
 	static var accessToken = ""
-	
-	static var organizations = [String: Organization]()
-	static func loadOrganization(_ id: String, completion: @escaping (Organization?) -> Void) {
-		if let organization = organizations[id] {
-			completion(organization)
-			return
-		}
-		
-		API.fetchOrganization(id) { organizationQuery in
-			if let organizationQuery = organizationQuery, let organization = organizationQuery.organization {
-				self.organizations[id] = organization
-				completion(organization)
-				return
-			}
-			
-			completion(nil)
-		}
-	}
-	
-	static func fetchAnimalTypes(completion: @escaping (AnimalTypesQuery?) -> Void) {
-		performRequest(category: "types", parameters: [:]) { data in
-			guard let data = data else {
-				print("animal type query failed")
-				completion(nil)
-				return
-			}
-			
-			do {
-				let animalTypesQuery = try JSONDecoder().decode(AnimalTypesQuery.self, from: data)
-				completion(animalTypesQuery)
-			} catch {
-				print(error)
-				completion(nil)
-			}
-		}
-	}
-	
-	static func fetchBreeds(_ type: String, completion: @escaping (BreedsQuery?) -> Void) {
-		performRequest(category: "types/\(type)/breeds", parameters: [:]) { data in
-			guard let data = data else {
-				print("breeds query failed")
-				completion(nil)
-				return
-			}
-			
-			do {
-				let breedsQuery = try JSONDecoder().decode(BreedsQuery.self, from: data)
-				completion(breedsQuery)
-			} catch {
-				print(error)
-				completion(nil)
-			}
-		}
-	}
-	
-    static func fetchAnimals(_ search: Search, location: String, distance: String, page: Int, completion: @escaping (AnimalsQuery?) -> Void) {
-		var parameters = [String: String]()
-		
-		for key in search.filters.keys {
-			parameters[key] = search.filters[key]!.joined(separator: ",")
-		}
-		
-		parameters["type"] = search.animalType
-		parameters["page"] = String(page)
-		parameters["location"] = location
+    
+    static func fetchAnimalTypes() async throws -> AnimalTypesQuery {
+		let data = try await performRequest(category: "types", parameters: [:])
+        return try JSONDecoder().decode(AnimalTypesQuery.self, from: data)
+    }
+    
+    static func fetchBreeds(_ type: String) async throws -> BreedsQuery {
+        let data = try await performRequest(category: "types/\(type)/breeds", parameters: [:])
+        return try JSONDecoder().decode(BreedsQuery.self, from: data)
+    }
+    
+    static func fetchAnimals(_ search: Search, location: String, distance: String, page: Int) async throws -> AnimalsQuery {
+        var parameters = search.filters.keys.reduce(into: [String: String]()) {
+            $0[$1] = search.filters[$1]!.joined(separator: ",")
+        }
+        
+        parameters["type"] = search.animalType
+        parameters["page"] = String(page)
+        parameters["location"] = location
         parameters["distance"] = distance
-		
-		performRequest(category: "animals", parameters: parameters) { data in
-			guard let data = data else {
-				print("animal query failed")
-				completion(nil)
-				return
-			}
-			
-			do {
-				let animalQuery = try JSONDecoder().decode(AnimalsQuery.self, from: data)
-				completion(animalQuery)
-			} catch {
-				print(error)
-				completion(nil)
-			}
-		}
-	}
-	
-	static func fetchAnimal(_ id: Int, completion: @escaping (AnimalQuery?) -> Void) {
-		performRequest(category: "animals/\(id)", parameters: [:]) { data in
-			guard let data = data else {
-				print("query failed")
-				completion(nil)
-				return
-			}
-			
-			do {
-				let animalQuery = try JSONDecoder().decode(AnimalQuery.self, from: data)
-				completion(animalQuery)
-			} catch {
-				if let json = try? JSONSerialization.jsonObject(with: data, options: []) {
-					print(json)
-				}
-				print(error)
-				completion(nil)
-			}
-		}
-	}
-	
-    static func fetchOrganizations(location: String, distance: String, page: Int = 1, completion: @escaping (OrganizationsQuery?) -> Void) {
-		let parameters = [
-			"location": location,
-			"distance": distance,
+        
+        let data = try await performRequest(category: "animals", parameters: parameters)
+        return try JSONDecoder().decode(AnimalsQuery.self, from: data)
+    }
+    
+    static func fetchAnimal(_ id: Int) async throws -> AnimalQuery {
+        let data = try await performRequest(category: "animals/\(id)", parameters: [:])
+        return try JSONDecoder().decode(AnimalQuery.self, from: data)
+    }
+    
+    static func fetchOrganizations(location: String, distance: String, page: Int = 1) async throws -> OrganizationsQuery {
+        let parameters = [
+            "location": location,
+            "distance": distance,
             "page": "\(page)",
-			"limit": "100"
-		]
-		
-		performRequest(category: "organizations", parameters: parameters) { data in
-			guard let data = data else {
-				print("animal query failed")
-				completion(nil)
-				return
-			}
-			
-			do {
-				let organizationsQuery = try JSONDecoder().decode(OrganizationsQuery.self, from: data)
-				completion(organizationsQuery)
-			} catch {
-				print(error)
-				completion(nil)
-			}
-		}
-	}
-	
-	static func fetchOrganization(_ id: String, completion: @escaping (OrganizationQuery?) -> Void) {
-		performRequest(category: "organizations/\(id)", parameters: [:]) { data in
-			guard let data = data else {
-				print("query failed")
-				completion(nil)
-				return
-			}
-			
-			do {
-				let organizationQuery = try JSONDecoder().decode(OrganizationQuery.self, from: data)
-				completion(organizationQuery)
-			} catch {
-				if let json = try? JSONSerialization.jsonObject(with: data, options: []) {
-					print(json)
-				}
-				print(error)
-				completion(nil)
-			}
-		}
-	}
-	
-	static private func verifyToken(completion: @escaping (_ success: Bool) -> Void) {
-		if Date().timeIntervalSince1970 + 5 < tokenExpiration {
-			completion(true)
-		}
-		
-		fetchAccessToken { token, expiration in
-			guard let token = token, let expiration = expiration else {
-				completion(false)
-				return
-			}
-			
-			accessToken = token
-			tokenExpiration = Date().timeIntervalSince1970 + Double(expiration)
-			completion(true)
-		}
-	}
-	
-	static private func performRequest(category: String, action: String? = nil, parameters: [String: String] = [:], completion: @escaping (_ result: Data?) -> Void) {
-		verifyToken { success in
-			guard success else {
-				completion(nil)
-				print("invalid token")
-				return
-			}
-			
-			let url = "https://api.petfinder.com/v2/\(category)\(action != nil ? "/\(action!)" : "")"
-			
-			var components = URLComponents(string: url)!
-			components.queryItems = parameters.map { (key, value) in
-				URLQueryItem(name: key, value: value)
-			}
-			
-			components.percentEncodedQuery = components.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
-			var request = URLRequest(url: components.url!)
-			
-			request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-			
-			let task = URLSession.shared.dataTask(with: request) { data, response, error in
-				guard
-					let data = data,
-					let response = response as? HTTPURLResponse,
-					200 ..< 300 ~= response.statusCode,
-					error == nil
-				else {
-					if let urlString = request.url?.absoluteString, let response = response as? HTTPURLResponse {
-						print(urlString)
-						print(response.statusCode)
-					}
-					completion(nil)
-					return
-				}
-				
-				completion(data)
-			}
-			
-			task.resume()
-		}
-		
-	}
-	
-	static private func fetchAccessToken(completion: @escaping (_ token: String?, _ expiration: Int?) -> Void) {
-		let url = URL(string: "https://api.petfinder.com/v2/oauth2/token")!
-		var request = URLRequest(url: url)
-		request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-		request.httpMethod = "POST"
-		let parameters: [String: Any] = [
-			"grant_type": "client_credentials",
-			"client_id": key,
-			"client_secret": secret
-		]
-		request.httpBody = parameters.percentEncoded()
-		
-		let task = URLSession.shared.dataTask(with: request) { data, response, error in
-			guard let data = data,
-				  let response = response as? HTTPURLResponse,
-				  error == nil else {
-					  print("error", error ?? "Unknown error")
-					  completion(nil, nil)
-					  return
-				  }
-			
-			guard (200 ... 299) ~= response.statusCode else {
-				print("statusCode should be 2xx, but is \(response.statusCode)")
-				print("response = \(response)")
-				completion(nil, nil)
-				return
-			}
-			
-			if let response = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-				completion(response["access_token"] as? String, response["expires_in"] as? Int)
-				return
-			}
-			
-			completion(nil, nil)
-		}
-		
-		task.resume()
-	}
+            "limit": "100"
+        ]
+        
+        let data = try await performRequest(category: "organizations", parameters: parameters)
+        return try JSONDecoder().decode(OrganizationsQuery.self, from: data)
+    }
+    
+    static func fetchOrganization(_ id: String) async throws -> OrganizationQuery {
+        let data = try await performRequest(category: "organizations/\(id)", parameters: [:])
+        return try JSONDecoder().decode(OrganizationQuery.self, from: data)
+    }
+    
+    static private func verifyToken() async throws {
+        if Date().timeIntervalSince1970 + 5 < tokenExpiration {
+            return
+        }
+        
+        let (token, expiration) = try await fetchAccessToken()
+        
+        self.accessToken = token
+        self.tokenExpiration = Date().timeIntervalSince1970 + Double(expiration)
+    }
+    
+    static private func performRequest(category: String, action: String? = nil, parameters: [String: String] = [:]) async throws -> Data {
+        try await verifyToken()
+        
+        let url = "https://api.petfinder.com/v2/\(category)\(action != nil ? "/\(action!)" : "")"
+        
+        var components = URLComponents(string: url)!
+        components.queryItems = parameters.map { (key, value) in
+            URLQueryItem(name: key, value: value)
+        }
+        
+        components.percentEncodedQuery = components.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
+        var request = URLRequest(url: components.url!)
+        
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw APIError.invalidResponse }
+        
+        return data
+    }
+    
+    static private func fetchAccessToken() async throws -> (token: String, expiration: Int) {
+        let url = URL(string: "https://api.petfinder.com/v2/oauth2/token")!
+        let parameters: [String: Any] = [
+            "grant_type": "client_credentials",
+            "client_id": key,
+            "client_secret": secret
+        ]
+        var request = URLRequest(url: url)
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "POST"
+        request.httpBody = parameters.percentEncoded()
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard (response as? HTTPURLResponse)?.statusCode == 200,
+              let jsonResponse = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+              let token = jsonResponse["access_token"] as? String,
+              let expiration = jsonResponse["expires_in"] as? Int
+        else {
+            throw APIError.badKey
+        }
+        return (token, expiration)
+    }
+}
+
+enum APIError: Error {
+    case badKey
+    case invalidResponse
 }

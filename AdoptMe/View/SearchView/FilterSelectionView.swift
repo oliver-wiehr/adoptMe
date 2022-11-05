@@ -32,7 +32,9 @@ struct FilterSelectionView: View {
         }.sheet(isPresented: $showFilterView) {
             adoptMe.sortFilters()
             if self.previousFilters != adoptMe.search?.filters {
-                adoptMe.loadAnimals()
+                Task {
+                    try await adoptMe.loadAnimals()
+                }
             }
         } content: {
             let selectionAction: (_ filterAction: String) -> Void = { filterOptionId in

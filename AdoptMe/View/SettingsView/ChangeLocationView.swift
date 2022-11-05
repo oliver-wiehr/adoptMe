@@ -46,29 +46,16 @@ struct ChangeLocationView: View {
                 print(value)
             }
             Button {
-                adoptMe.searchResults = []
-                adoptMe.location = locationManager.location
-                adoptMe.distance = String(miles)
-                adoptMe.refresh()
-                locationManager.location = ""
-            } label: {
-                Text("Set")
-            }
-            .disabled({
                 if ZipCodes.validate(locationManager.location) {
-                    return false
+                    adoptMe.location = locationManager.location
                 }
-                
-                if locationManager.location.isEmpty {
-                    if let distance = distance {
-                        if Int(distance) != Int(miles) {
-                            return false
-                        }
-                    }
+                adoptMe.distance = String(Int(miles))
+                Task {
+                    try await adoptMe.refresh()
                 }
-                
-                return true
-            }())
+                locationManager.location = ""
+            } label: { Text("Set") }
+            .disabled(!ZipCodes.validate(locationManager.location) && Int(distance ?? "100") == Int(miles))
         }
     }
 }
