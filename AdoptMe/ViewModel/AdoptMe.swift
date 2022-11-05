@@ -27,6 +27,7 @@ class AdoptMe: ObservableObject {
     }
     
     var page = 1
+    var maxPage = 1
     
 	@Published var searchResults = [Int]()
     @Published var favorites = [Int]() {
@@ -158,10 +159,11 @@ class AdoptMe: ObservableObject {
     func loadNextPageIfNeeded(_ currentId: Int) {
         guard let currentIndex = searchResults.firstIndex(of: currentId),
               currentIndex >= searchResults.count - 2,
-        last_page_loaded < Date().timeIntervalSince1970 - 5 else { return }
+              last_page_loaded < Date().timeIntervalSince1970 - 5,
+              page < maxPage
+            else { return }
         last_page_loaded = Date().timeIntervalSince1970
         self.page += 1
-        print("loading page \(page)")
         Task {
             try await self.loadAnimals()
         }
@@ -171,6 +173,7 @@ class AdoptMe: ObservableObject {
         guard let search, let location else { return }
         
         let animalsQuery = try await API.fetchAnimals(search, location: location, distance: distance ?? "100", page: page)
+        self.maxPage = animalsQuery.pagination.totalPages
         for animal in animalsQuery.animals {
             try await loadOrganization(animal.organizationId)
             DispatchQueue.main.async {
