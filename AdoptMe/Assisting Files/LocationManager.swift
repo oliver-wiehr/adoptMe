@@ -13,7 +13,9 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     let geoCoder = CLGeocoder()
     
     @Published var isLoadingLocation = false
-    @Published var location = ""
+    @Published var location = "" { didSet { locationRequested = false } }
+    
+    private var locationRequested = false
     
     override init() {
         super.init()
@@ -22,9 +24,11 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
     
     func requestLocation() {
-        if [.authorizedAlways, .authorizedWhenInUse].contains(locationManager.authorizationStatus) {
+        self.locationRequested = true
+        switch locationManager.authorizationStatus {
+        case .authorizedAlways, .authorizedWhenInUse:
             locationManager.requestLocation()
-        } else {
+        default:
             locationManager.requestWhenInUseAuthorization()
         }
     }
@@ -35,9 +39,11 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        if [.authorizedAlways, .authorizedWhenInUse].contains(locationManager.authorizationStatus) {
-            isLoadingLocation = true
+        switch locationManager.authorizationStatus {
+        case .authorizedAlways, .authorizedWhenInUse:
             locationManager.requestLocation()
+        default:
+            return
         }
     }
     
@@ -45,7 +51,9 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         if let location = locations.first {
             geoCoder.reverseGeocodeLocation(location) { placemarks, error in
                 if let placemark = placemarks?.first, let postalCode = placemark.postalCode {
-                    self.location = postalCode
+                    if self.locationRequested {
+                        self.location = postalCode
+                    }
                 }
                 
                 self.isLoadingLocation = false

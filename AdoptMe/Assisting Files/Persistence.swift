@@ -62,15 +62,15 @@ class Persistence {
         return UserDefaults.standard.object(forKey: "distance") as? String
     }
     
-    static func setFavorites(_ favorites: [SearchResult]) {
+    static func setFavorites(_ favorites: [Int]) {
         if let encoded = try? JSONEncoder().encode(favorites) {
             UserDefaults.standard.set(encoded, forKey: "favorites")
         }
     }
     
-    static func getFavorites() -> [SearchResult] {
+    static func getFavorites() -> [Int] {
         if let data = UserDefaults.standard.object(forKey: "favorites") as? Data,
-           let favorites = try? JSONDecoder().decode([SearchResult].self, from: data) {
+           let favorites = try? JSONDecoder().decode([Int].self, from: data) {
             return favorites
         }
         
