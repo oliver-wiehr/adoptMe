@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A71C2ADC2962222100E8C99A /* Extensions+UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71C2ADB2962222100E8C99A /* Extensions+UINavigationController.swift */; };
 		A72247902780FE9A00064273 /* AdoptMeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A722478F2780FE9A00064273 /* AdoptMeApp.swift */; };
 		A72247922780FE9A00064273 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72247912780FE9A00064273 /* SearchView.swift */; };
 		A72247942780FE9C00064273 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A72247932780FE9C00064273 /* Assets.xcassets */; };
@@ -74,6 +75,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A71C2ADB2962222100E8C99A /* Extensions+UINavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extensions+UINavigationController.swift"; sourceTree = "<group>"; };
 		A722478C2780FE9A00064273 /* AdoptMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AdoptMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A722478F2780FE9A00064273 /* AdoptMeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdoptMeApp.swift; sourceTree = "<group>"; };
 		A72247912780FE9A00064273 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
@@ -365,6 +367,7 @@
 				A76F2C6D2904E1B50076B529 /* Extensions+CharacterSet.swift */,
 				A76F2C6F2904E1D30076B529 /* Extensions+UIImageView.swift */,
 				A76F2C712904E1E90076B529 /* Extensions+AnyTransition.swift */,
+				A71C2ADB2962222100E8C99A /* Extensions+UINavigationController.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -447,6 +450,7 @@
 				A7D719BC278640BB00DF8914 /* SettingsView.swift in Sources */,
 				A76F2C6E2904E1B50076B529 /* Extensions+CharacterSet.swift in Sources */,
 				A7564C1B27833FF500CC1CD5 /* AnimalView.swift in Sources */,
+				A71C2ADC2962222100E8C99A /* Extensions+UINavigationController.swift in Sources */,
 				A7EE2ACC27C6D8E400C1E7AC /* WalkthroughView.swift in Sources */,
 				A76F2C4D2904DF880076B529 /* Environment.swift in Sources */,
 				A76F2C362904DDA80076B529 /* AnimalHealthView.swift in Sources */,
