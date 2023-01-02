@@ -10,42 +10,100 @@ import SwiftUI
 struct SearchView: View {
 	@EnvironmentObject var adoptMe: AdoptMe
 	@State var showSettingsView = false
-	@State var showFavoritesView = false
+    @State var showFavoritesView = false
+    
+    @State private var xOffset: CGFloat = 0
+    @State private var initiateTransition: Bool?
 	
 	var body: some View {
 		if showSettingsView {
 			SettingsView(show: $showSettingsView).transition(.leftSlide)
-		} else if showFavoritesView {
-			FavoritesView(show: $showFavoritesView).transition(.rightSlide)
 		} else {
-			NavigationView {
-				VStack {
-					FiltersSelectionView()
-					SearchResultsView()
-				}
-				.toolbar {
-					ToolbarItem(placement: .navigationBarLeading) {
-						Button {
-							withAnimation {
-								showSettingsView = true
-							}
-						} label: {
-							Image(systemName: "slider.horizontal.3")
-						}
-					}
-					ToolbarItem(placement: .navigationBarTrailing) {
-						Button {
-							withAnimation {
-								showFavoritesView = true
-							}
-						} label: {
-							Image(systemName: "heart.fill")
-						}
-					}
-				}
-                .navigationTitle("AdoptMe")
-                .navigationBarTitleDisplayMode(.inline)
-			}.navigationViewStyle(StackNavigationViewStyle())
+            ZStack {
+                NavigationView {
+                    VStack {
+                        FiltersSelectionView()
+                        SearchResultsView()
+                    }
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            Button {
+                                withAnimation {
+                                    showSettingsView = true
+                                }
+                            } label: {
+                                Image(systemName: "slider.horizontal.3")
+                            }
+                        }
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button {
+                                withAnimation {
+                                    showFavoritesView = true
+                                }
+                            } label: {
+                                Image(systemName: "heart.fill")
+                            }
+                        }
+                    }
+                    .navigationTitle("AdoptMe")
+                    .navigationBarTitleDisplayMode(.inline)
+                }.navigationViewStyle(StackNavigationViewStyle())
+                    .offset(x: xOffset)
+                FavoritesView(show: $showFavoritesView)
+                    .offset(x: UIScreen.main.bounds.size.width + xOffset)
+            }
+            .gesture(
+                DragGesture()
+                    .onChanged({ gesture in
+                        updateDragGesture(gesture.translation)
+                    })
+                    .onEnded({ gesture in
+                        completeDragGesture()
+                    })
+            )
+            .onChange(of: showFavoritesView) { newValue in
+                withAnimation {
+                    if newValue {
+                        xOffset = -UIScreen.main.bounds.size.width
+                    } else {
+                        xOffset = 0
+                    }
+                }
+            }
+        }
+    }
+    
+    func updateDragGesture(_ translation: CGSize) {
+        if initiateTransition == nil {
+            if abs(translation.height) > 10 {
+                initiateTransition = false
+            } else if (!showFavoritesView && translation.width < -10)
+                        || (showFavoritesView && translation.width > 10) {
+                initiateTransition = true
+            }
+        }
+        
+        if initiateTransition == true {
+            if !showFavoritesView {
+                xOffset = translation.width
+            } else {
+                xOffset = -UIScreen.main.bounds.size.width + translation.width
+            }
+        }
+    }
+    
+    func completeDragGesture() {
+        initiateTransition = nil
+        if xOffset < -UIScreen.main.bounds.size.width / 2 {
+            withAnimation {
+                xOffset = -UIScreen.main.bounds.size.width
+            }
+            showFavoritesView = true
+        } else {
+            withAnimation {
+                xOffset = 0
+            }
+            showFavoritesView = false
         }
     }
 }
