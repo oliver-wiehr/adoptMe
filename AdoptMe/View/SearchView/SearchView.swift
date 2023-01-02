@@ -14,62 +14,63 @@ struct SearchView: View {
     
     @State private var xOffset: CGFloat = 0
     @State private var initiateTransition: Bool?
-	
-	var body: some View {
-		if showSettingsView {
-			SettingsView(show: $showSettingsView).transition(.leftSlide)
-		} else {
-            ZStack {
-                NavigationView {
-                    VStack {
-                        FiltersSelectionView()
-                        SearchResultsView()
-                    }
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarLeading) {
-                            Button {
-                                withAnimation {
-                                    showSettingsView = true
-                                }
-                            } label: {
-                                Image(systemName: "slider.horizontal.3")
+    
+    var body: some View {
+        ZStack {
+            NavigationView {
+                VStack {
+                    TopBar(showFavorites: $showFavoritesView, showSettings: $showSettingsView)
+                    SearchResultsView()
+                }
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button {
+                            withAnimation {
+                                showSettingsView = true
                             }
-                        }
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button {
-                                withAnimation {
-                                    showFavoritesView = true
-                                }
-                            } label: {
-                                Image(systemName: "heart.fill")
-                            }
+                        } label: {
+                            Image(systemName: "slider.horizontal.3")
                         }
                     }
-                    .navigationTitle("AdoptMe")
-                    .navigationBarTitleDisplayMode(.inline)
-                }.navigationViewStyle(StackNavigationViewStyle())
-                    .offset(x: xOffset)
-                FavoritesView(show: $showFavoritesView)
-                    .offset(x: UIScreen.main.bounds.size.width + xOffset)
-            }
-            .gesture(
-                DragGesture()
-                    .onChanged({ gesture in
-                        updateDragGesture(gesture.translation)
-                    })
-                    .onEnded({ gesture in
-                        completeDragGesture()
-                    })
-            )
-            .onChange(of: showFavoritesView) { newValue in
-                withAnimation {
-                    if newValue {
-                        xOffset = -UIScreen.main.bounds.size.width
-                    } else {
-                        xOffset = 0
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            withAnimation {
+                                showFavoritesView = true
+                            }
+                        } label: {
+                            Image(systemName: "heart.fill")
+                        }
                     }
                 }
+                .navigationTitle("AdoptMe")
+                .navigationBarHidden(true)
+                .navigationBarTitleDisplayMode(.inline)
+            }.navigationViewStyle(StackNavigationViewStyle())
+                .offset(x: xOffset)
+                .navigationBarHidden(true)
+            FavoritesView(show: $showFavoritesView)
+                .offset(x: UIScreen.main.bounds.size.width + xOffset)
+        }
+        .gesture(
+            DragGesture()
+                .onChanged({ gesture in
+                    updateDragGesture(gesture.translation)
+                })
+                .onEnded({ gesture in
+                    completeDragGesture()
+                })
+        )
+        .onChange(of: showFavoritesView) { newValue in
+            withAnimation {
+                if newValue {
+                    xOffset = -UIScreen.main.bounds.size.width
+                } else {
+                    xOffset = 0
+                }
             }
+        }
+        .popover(isPresented: $showSettingsView) {
+            SettingsView(show: $showSettingsView).transition(.leftSlide)
         }
     }
     

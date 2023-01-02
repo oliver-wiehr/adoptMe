@@ -15,9 +15,7 @@ struct SettingsView: View {
         NavigationView {
             ScrollView {
                 VStack() {
-                    NewSearchView(showSettingsView: $show).padding()
-                    RecentSearchesView(showSettingsView: $show).padding()
-                    ChangeLocationView(miles: adoptMe.distance == nil ? 100 : Float(adoptMe.distance!) ?? 100, location: $adoptMe.location, distance: $adoptMe.distance).padding()
+                    MapView().padding()
                     CopyrightView().padding()
                 }
             }
