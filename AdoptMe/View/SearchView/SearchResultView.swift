@@ -33,6 +33,7 @@ struct SearchResultView: View {
             VStack(alignment: .leading) {
                 HStack {
                     Text(animal.name).font(.headline)
+                        .lineLimit(2)
                     Spacer()
                     Button {
                         if adoptMe.favorites.contains(animal.id) {
