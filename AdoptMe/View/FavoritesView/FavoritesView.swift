@@ -9,26 +9,24 @@ import SwiftUI
 
 struct FavoritesView: View {
 	@EnvironmentObject var adoptMe: AdoptMe
-	@Binding var show: Bool
+    @Binding var show: Bool
 	
     var body: some View {
-		NavigationView {
-			SavedFavoritesView(adoptMe: adoptMe)
-				.navigationTitle("Favorites")
-				.navigationBarTitleDisplayMode(.inline)
-				.toolbar {
-					ToolbarItem(placement: .navigationBarLeading) {
-						Button {
-							withAnimation {
-								show = false
-							}
-						} label: {
-							Image(systemName: "chevron.left")
-						}
-					}
-				}
-		}.navigationViewStyle(StackNavigationViewStyle())
-	}
+        NavigationView {
+            SavedFavoritesView(adoptMe: adoptMe)
+                .navigationTitle("Favorites")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button {
+                            show = false
+                        } label: {
+                            Image(systemName: "chevron.left")
+                        }
+                    }
+                }
+        }.navigationViewStyle(StackNavigationViewStyle())
+    }
 }
 
 //struct FavoritesView_Previews: PreviewProvider {
